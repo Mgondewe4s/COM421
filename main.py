@@ -1,16 +1,324 @@
-# This is a sample Python script.
+# 1. The user must be able to add a new point of interest. They must provide, at the very least, a name, type, and a description. (You may also ask the user for other information if you believe it is necessary, but I will leave it up to you to decide).
+class Poi:
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+    def __init__(self, name, type, description, codeNumber):
+        self.name = name
+        self.type = type
+        self.description = description
+        self.codeNumber = codeNumber
+
+        # This will allow the user to read the content inputted
+
+    def __str__(self):
+        return f"{self.name} {self.type} {self.description} {self.codeNumber}"
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+class list_of_poi:
+    def __init__(self):
+        self.data = []
+
+    # Task 1. The user must be able to add a new point of interest
+    def additionalPoi(self, poi):
+        self.data.append(poi)
+
+    # Task 2. The user must be able to search for a specific POI (I will leave it up to you as to how you identify specific POIs).
+
+    # Here i will use codes to differentiate POIs to allow the user to search for their specific need.
+
+    def code_search(self, codeNumber):
+        temp = []
+
+        # Here i will use a for loop which will look through our data, inside the for loop will be an if loop which will look for a condition where the code inputted by the user is in our list, if thid id true, the code inputted will be added to our temp list
+
+        for element in self.data:
+            if element.codeNumber == codeNumber:
+                temp.append(element)
+                break
+
+        if len(temp) == 0:
+            print("This code didn't match any of our documents")
+
+            return temp
+
+    # Task 4 - The user must be able to search for a POI by name. (It is possible that there are two POIs with the same name)
+
+    def search_by_name(self, name):
+
+        temp_list = []
+
+        # Here we will create a for loop which will look through every entry in our list
+        for element in self.data:
+            # Here there will be a nested loop which will search for entry that matches a name in the systems list
+            if element.name.lower() == name.lower():
+                # Once match has been found it will be appended to the temp list
+                temp_list.append(element)
+
+        if len(temp_list) == 0:
+            print("Poi name unavailable, please try again")
+            temp_list = "None"
+
+        return temp_list
+
+    # Task 5 - The user must be able to delete a specific POI (I will leave it up to you as to how you identify specific POIs).
+    def delete_poi(self, code):
+        # Here we will create a for loop which will look through every entry in our list
+        for element in self.data:
+            # Here there will be a nested loop which will search for entry that matches a code in the systems list
+            if int(element.code) == code:
+                # Once match has been found it will be deleted from data set
+                self.data.remove(element)
+                return element
+
+        # Here we will use Hash in order to calculate the code number
+        # Here we will convert our list to a dictionary
+        # What a hash function does is covert a string to index into an array
+
+    def codeNumber(self, name):
+
+        count = 0
+        hashCode = 0
+        for character in name:
+            hashCode += (ord(character) - 6) * (3 ** count)
+            count += 1
+
+        hashCode = hashCode % 2000
+        while True:
+            temp = 0
+            for s in self.data:
+                if s.codeNumber == str(hashCode):
+                    hashCode += 1
+                else:
+                    temp += 1
+
+            if temp == len(self.data):
+                break
+
+        hashCode = hashCode % 2000
+        while True:
+            temp = 0
+            for s in self.data:
+                if s.codeNumber == str(hashCode):
+                    hashCode += 1
+                else:
+                    temp += 1
+
+            if temp == len(self.data):
+                break
+
+        return hashCode
+
+    def __str__(self):
+        return self.data.__str__
+
+    # Task 3. The user must be able to display all POIs, sorted by name
+    # Here  I will use merge sort in order to sort my Poi by name
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def merge_sort(data):
+    # If the say of the array is one we don't want to do anything
+    if len(data) <= 1:
+        return data
+    # Here is where we find the middle of the array by getting the length of the list and dividing it by 2
+    middle_point = len(data) // 2
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # This is how we get the left side of the list
+    left_side = data[:middle_point]
+
+    # This is how we get the right side of the list
+    right_side = data[middle_point:]
+
+    # This is how we will call the merge sort on the right and left side in a recursive manner which means the function will call itself
+    # This current way of merging is ineffcient as it requires the function to create new arrays which isn't optiaml in terms of space complexity
+    merge_sort(left_side)
+    merge_sort(right_side)
+
+    # This will call the merge_two_sorted list function
+    merge_two_sorted_lists(left_side, right_side, data)
+
+
+def merge_two_sorted_lists(left, right, data):
+    len_left = len(left)
+    len_right = len(right)
+    i = j = k = 0
+
+    while i < len_left and j < len_right:
+        if left[i] <= right[j]:
+            data[k] = left[i]
+            i += 1
+        else:
+            data[k] = right[j]
+            j += 1
+        k += 1
+    while i < len_left:
+        data[k] = left[i]
+        i += i
+        k += 1
+    while j < len_right:
+        data[k] = right[j]
+        j += 1
+        k += 1
+
+
+def tableDesign(List_of_Poi):
+    pn = "Poi Name"
+    pt = "Poi Type"
+    pd = "Poi Description"
+    sc = "Serial Code"
+    b = "|"
+    for z in range(222):
+        print("-", end="")
+    print("")
+    print(f"|{pn:>22}{pt:>50}{pd:>91} {sc:>16}{b:>38}|")
+    for p in List_of_Poi:
+        for j in range(222):
+            print("-", end="")
+        print("")
+        print(f"|\t{p.name:<35}\t{p.type:<50}\t{p.description:<105}|\t{p.codeNumber:<18}")
+    for j in range(222):
+        print("-", end="")
+
+
+# Task 7 - A user should be able to make an enquiry about a particular point of interest,
+# such as “Does your restaurant offer vegan or gluten-free food?”.
+# “What time will the concert end?”, etc. The application must allow the user to do
+
+class Queue:
+    def __init__(self, capacity=10):
+        self.front = 0
+        self.back = 0
+        self.queue_size = 0
+        self.data = [None] * capacity
+        self.capacity = capacity
+
+    def add(self, item):
+        self.data[self.back] = item
+        self.back += 1
+
+        if self.back == len(self.capacity):
+            self.back = 0
+
+        self.queue_size
+
+    def remove(self):
+        temp = self.data[self.front]
+        self.data[self.front] = None
+        self.front += 1
+
+        if self.front == len(self.capacity):
+            self.front = 0
+        self.queue_size -= 1
+
+    def size(self):
+        return self.queue_size
+
+    def __str__(self):
+        return self.data.__str__()
+
+
+# -------------- Menu  -------------------------------#
+
+def menu():
+    print("Welcome!\nPlease select an options below")
+
+    # Here we will create our lists
+    List_of_poi = list_of_poi()
+    # This is where our queue of inquiries will be presented
+    enquiry = Queue()
+
+    # Menu will run until user types "exit"
+
+    while True:
+        print(
+            "\n1 - Add point of interest\n2 - Search point of interest by code number\n3 - Present point of interest sorted poi name\n4 - Search point of interest by point of interest name\n5 - Delete point of interest\n6 - Save point of interest to file\n7 - Enquires\nExit - Exit program ")
+        option = input()
+
+        if option:
+            if option == "1":
+                print("Searching for POI..\n")
+                while True:
+                    print("Poi Name:\n")
+                    name = input()
+                    if name == "":
+                        print("Please provide a name for POI")
+                    else:
+                        break
+                code = List_of_poi.codeNumber(name)
+                print("Poi Type:\n")
+                poiType = input()
+                print("Poi description:\n")
+                poiDescription = input()
+                poiTemp = Poi(f"{name}", f"{poiType}", f"{poiDescription}", f"{code}")
+                List_of_poi.additionalPoi(poiTemp)
+
+                print("\n")
+                print(f"Poi System has been updated!\n -- Code Number: {code}")
+
+
+            # Searching for poi by code number
+            elif option == "2":
+                print("Please type the code number that correlates with your poi")
+                odeNumber = int(input())
+                poi_found = List_of_poi.code_search(odeNumber)
+                if len(poi_found) != 0:
+                    print("Found Poi:")
+                    tableDesign(poi_found)
+
+            # Display all POI, which I used merge sort to sort the names
+
+            elif option == "3":
+                print("Poi with name of:")
+                sorted(merge_sort(List_of_poi.data))
+                tableDesign(sorted())
+
+            # Search poi by name
+
+            elif option == "4":
+                name = input("Name of poi:")
+                poi_found = List_of_poi.search_by_name(name)
+                if poi_found != "None":
+                    print(f"Point of interest by {name}:")
+                    tableDesign(poi_found)
+
+
+            #User can decide which poi to delete
+            elif option == "5":
+                print("Poi found:")
+                code = int(input("Code Number:"))
+                pointOfInterest = List_of_poi.delete_poi(code)
+                tableDesign([pointOfInterest])
+                tableDesign(poi_found)
+                print("\n This point of interest will now be deleted")
+
+            #The user must be able to save POIs to file, and load them back from file. (Use what you learnt in COM411 for this.
+            # You are NOT required to talk about this in the report. It only needs to be present in the code).
+            elif option == "7":
+                while True:
+                    print("\n Please select an option!")
+                    print("2 - Customer/ client")
+                    print("1 - Part of the team")
+                    print("Back - Return to main menu")
+                    option = input()
+                    if option:
+                        if option ==  "1":
+                            print("Pease leave your concern/ question for a member of our team to answer:\n")
+                            enquiy = input()
+                            enquiry.add(enquiy)
+                        elif option == "2":
+                            if enquiry.queue_size == 0:
+                                print("You are up to date with all your enquires")
+                            else:
+                                while enquiry.queue_size > 0:
+                                    print(f"You got {enquiry.queue_size} enquires on hold\n Enquires:")
+                                    print(enquiry.remove())
+                                    input("Your reply:\n")
+                                print("You have completed all your tasks")
+
+                        elif option == "Back":
+                            break
+
+
+
+
+
+if __name__ == "__main__":
+    menu()
